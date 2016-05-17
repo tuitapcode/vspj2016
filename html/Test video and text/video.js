@@ -26,53 +26,86 @@ window.onload = function() {
         txt = txt + c[i].nodeName + "<br>";
     }*/
 
-	console.log(sub.childNodes[0].nodeName == "#text");
+	//sub.childNodes[2].classList.add("current-subtitle");
 
-	/*if (sub.childNodes[1].classList.contains("current-subtitle") == false {
-    	sub.childNodes[1].classList.add("current-subtitle");
-    }*/
+	// if (sub_child[2].classList.contains("current-subtitle") == true) {
+ //    	sub_child[2].classList.remove("current-subtitle");
+ //    }
+
+ //    if (sub_child[2].classList.contains("current-subtitle") == false) {
+ //    	sub_child[2].classList.add("current-subtitle");
+ //    }
+
+	
 }
 
 function updateCurrentTime() {
     document.getElementById("curVideoTime").innerHTML = getCurrentTime();
-    
-
     
     //updateSubtitle();
     
 }
 
 function updateSubtitle() {
-	console.log("Jea?");
-	for(var i=0; i<sub.length; i++)
+	var sub_len = sub.childNodes.length;
+	var sub_child = sub.childNodes;
+
+	
+
+    /*for(i=0; i<sub_len; i++) {
+    	console.log(i);
+    	console.log(sub_child[i]);
+
+    	if (sub_child[i].nodeName != "A")
+    	{
+    		console.log(sub_child[i].nodeName != "A");
+    		continue;
+    	}
+    }*/
+
+	for(i=0; i<sub_len; i++)
     {
-    	console.log("Jea?");
-    	var curElement = sub[i];
-    	var curElementTime = parseFloat(hmsToSecondsOnly(item.getAttribute("title")));
+
+    	if (sub_child[i].nodeName != "A")
+    	{
+    		continue;
+    	}
+    	
+
+
+    	var curElement = sub_child[i];
+    	var curElementTime = parseFloat(hmsToSecondsOnly(curElement.getAttribute("title")));
 
     	var curVideoTime = parseFloat(getCurrentTime());
 
     	var nextElement = null;
     	var nextElementTime = null;
 
-    	if (i < (sub.length-1))
-    	{
-    		nextElement = sub[i+1];
-    		nextElementTime = parseFloat(hmsToSecondsOnly(item.getAttribute("title")));
+    	
 
-    		if (curVideoTime > curElementTime && curVideoTime < nextElementTime ) {
-	        	curElement.classList.add("current-subtitle");
+    	if (sub_child[i+1].nodeName == "A")
+    	{
+    		nextElement = sub_child[i+1];
+    		nextElementTime = parseFloat(hmsToSecondsOnly(nextElement.getAttribute("title")));
+
+    		console.log("time: " + curVideoTime + "-" +curElementTime + "-" + nextElementTime);
+    		if ((curVideoTime >= curElementTime) && (curVideoTime < nextElementTime) ) {
+    			if (curElement.classList.contains("current-subtitle") == false)
+	        		curElement.classList.add("current-subtitle");
 	        }
 	        else {
-	        	curElement.classList.remove("current-subtitle");
+	        	if (curElement.classList.contains("current-subtitle") == true)
+	        		curElement.classList.remove("current-subtitle");
 	        }
     	}
-    	else if (i == (sub.length-1)) {
-    		if (curVideoTime > curElementTime) {
-	        	curElement.classList.add("current-subtitle");
+    	else {
+    		if (curVideoTime >= curElementTime) {
+    			if (curElement.classList.contains("current-subtitle") == false)
+	        		curElement.classList.add("current-subtitle");
 	        }
 	        else {
-	        	curElement.classList.remove("current-subtitle");
+	        	if (curElement.classList.contains("current-subtitle") == true)
+	        		curElement.classList.remove("current-subtitle");
 	        }
     	}
     }
@@ -87,8 +120,30 @@ function xuly(event){
 	var item = event.target;
 	var time = hmsToSecondsOnly(item.getAttribute("title"));
 	SetCurrentTime(time);
-	console.log(time);
+
+	resetHighLight();
+	if (item.classList.contains("current-subtitle") == false)
+		item.classList.add("current-subtitle");
 	event.preventDefault();
+}
+
+function resetHighLight(){
+	var sub_len = sub.childNodes.length;
+	var sub_child = sub.childNodes;
+
+	for(i=0; i<sub_len; i++)
+    {
+
+    	if (sub_child[i].nodeName != "A")
+    	{
+    		continue;
+    	}
+
+    	var curElement = sub_child[i];
+
+    	if (curElement.classList.contains("current-subtitle") == true)
+			curElement.classList.remove("current-subtitle");
+    }
 }
 
 
