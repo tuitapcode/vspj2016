@@ -1,0 +1,44 @@
+﻿a.amara-transcript-line{
+	color:#212223;
+	font:normal 12px Tahoma;
+	line-height:32px;
+	padding:5px 0;
+	text-decoration:none;
+	-moz-background-clip:padding-box;
+	-moz-border-radius:5px;
+	-webkit-background-clip:padding-box;
+	-webkit-border-radius:5px;
+	background-clip:padding-box;
+	border-radius:5px
+}
+
+a.amara-transcript-line:hover{
+	background:#CACBCC;
+	-moz-box-shadow:
+	-4px 0px 0 #d1d2d3;
+	-webkit-box-shadow:-4px 0px 0 #d1d2d3;
+	box-shadow:-4px 0px 0 #d1d2d3
+}
+
+a.amara-transcript-line.current-subtitle{
+	background:#DADADA;
+	-moz-box-shadow:-4px 0px 0 #dadada;
+	-webkit-box-shadow:-4px 0px 0 #dadada;
+	box-shadow:-4px 0px 0 #dadada
+}
+
+a.amara-transcript-line:after{
+	content:" "
+}
+
+a.amara-transcript-line:focus{
+	outline:none
+}
+
+a.amara-transcript-line.selected{
+	background:#313233;
+	color:#FFF;
+	-moz-box-shadow:-4px 0px 0 #313233;
+	-webkit-box-shadow:-4px 0px 0 #313233;
+	box-shadow:-4px 0px 0 #313233
+}
