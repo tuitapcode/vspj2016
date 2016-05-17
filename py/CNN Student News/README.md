@@ -12,4 +12,4 @@ Ver kế tiếp sẽ chỉnh:
 * Làm gọn hàm
 * Thêm các phần "check" cần thiết (như ko có IDM, download lỗi, URL lỗi, ...)
 * Build 1 cái exe :3
-* what else...?
+* what else...? (thread, ?)
