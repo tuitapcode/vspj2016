@@ -1,4 +1,4 @@
 # CNN Student News
 
-pip install requests
-pip install comtypes
+- pip install requests
+- pip install comtypes
