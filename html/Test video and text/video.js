@@ -4,6 +4,7 @@
 * [x] Auto scroll khi video play...
 * [x] Xử lý tối ưu với timeupdate...
 * [ ] Xử lý Smooth Scrolling... xử lý khi scroll ở bottom bị lỗi, lặp vô hạn
+* [ ] Lỗi hiển thị khi click vào subtitle
 */
 
 var vid = null;
@@ -88,7 +89,7 @@ function onCanPlay(){
     }
 }*/
 
-function scrollToPosition(pos) {
+/*function scrollToPosition(pos) {
     //scrollCounter = 0;
     scrollTimer = setInterval(function(){
 
@@ -111,7 +112,7 @@ function scrollToPosition(pos) {
             console.log(scrollTimer);
         }
     }, 20);
-}
+}*/
 
 function updateCurrentTime() {
     document.getElementById("curVideoTime").innerHTML = getCurrentTime();
@@ -172,7 +173,7 @@ function updateSubtitle() {
 
                     //nextSubtitle = nextElement;
                     //curSubtitle = curElement;
-                    curSubtitlePostion = curElement.offsetTop - sub_container.offsetTop - 10;
+                    
 
                     curSubtitleTime = curElementTime;
                     nextSubtitleTime = nextElementTime;
@@ -180,7 +181,8 @@ function updateSubtitle() {
                     /*if (sub_container.scrollTop < (curElement.offsetTop - sub_container.offsetTop - 10)) {
                         sub_container.scrollTop += 5;//curElement.offsetTop - sub_container.offsetTop - 10;
                     }*/
-                    sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 10;
+                    sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 30;
+                    curSubtitlePostion = sub_container.scrollTop;
                     //curElement.scrollIntoView({block: "start", behavior: "smooth"});
                     break;
                 }
@@ -196,7 +198,7 @@ function updateSubtitle() {
     			if (curElement.classList.contains("current-subtitle") == false)
                 {
                     curElement.classList.add("current-subtitle");
-                    sub.scrollTop = curElement.offsetTop - sub.offsetTop - 10;
+                    sub.scrollTop = curElement.offsetTop - sub.offsetTop - 30;
                 }
 	        }
 	        else {
@@ -213,26 +215,27 @@ function IncrCurrentTime(event) {
 }
 
 function xuly(event){
+    resetHighLight();
+
 	var item = event.target;
 
     //console.log(item);
     //console.log(item.nextSibling);
 
-    curSubtitlePostion = item.offsetTop - sub_container.offsetTop - 10;
-    clearInterval(scrollTimer);
-    scrollTimer = null;
+    //curSubtitlePostion = item.offsetTop - sub_container.offsetTop - 30;
+    //clearInterval(scrollTimer);
+    //scrollTimer = null;
 
 	var time = hmsToSecondsOnly(item.getAttribute("title"));
     
-    if (item.nextSibling != undefined)
-    {
-        curSubtitleTime = parseFloat(time);
-        nextSubtitleTime = parseFloat(hmsToSecondsOnly(item.nextSibling.getAttribute("title")));
-    }
+    // if (item.nextSibling != undefined)
+    // {
+    //     curSubtitleTime = parseFloat(time);
+    //     nextSubtitleTime = parseFloat(hmsToSecondsOnly(item.nextSibling.getAttribute("title")));
+    // }
 
 	SetCurrentTime(time);
 
-	resetHighLight();
 	if (item.classList.contains("current-subtitle") == false)
 		item.classList.add("current-subtitle");
 	event.preventDefault();
