@@ -1,17 +1,25 @@
 /**
 * [x] Click vào subtitle --> Set Current Time
-* [ ] Highlight subtitle khi video playing...
+* [x] Highlight subtitle khi video playing...
+* [ ] Auto scroll khi video play...
 */
 
 var vid = null;
 var link_incr_time = null;
 var sub = null;
+var bPlay = null;
+var timer = null;
 
 
 window.onload = function() {
-
 	vid = document.getElementById("j_video");
-	vid.ontimeupdate = updateCurrentTime;
+    initVideo();
+    
+	//vid.ontimeupdate = updateCurrentTime;
+
+    //bPlay = document.getElementById("bJea");
+    //bPlay.onclick = vPause;//initVideo;
+    //setInterval(updateCurrentTime, 3000);
 
 	link_incr_time = document.getElementById("v_incr_time");
 	link_incr_time.onclick = IncrCurrentTime;
@@ -20,26 +28,67 @@ window.onload = function() {
 	removeTextChild();
 	//console.log(sub.childNodes.length);
 	sub.onclick = xuly;
-	
 
-	//sub.childNodes[100].classList.add("current-subtitle");
-    //sub.scrollTop = sub.childNodes[100].offsetTop - sub.offsetTop - 10;
-    //sub.childNodes[15].scrollTop = 0;
-    //console.log(sub.childNodes[15].scrollHeight);
-    //console.log();
-    //console.log(sub.childNodes[100].offsetTop - sub.offsetTop);
-    //console.log(sub.scrollHeight-sub.scrollTop);
-    //scrollToElement(sub.childNodes[15]);
-	// if (sub_child[2].classList.contains("current-subtitle") == true) {
- //    	sub_child[2].classList.remove("current-subtitle");
- //    }
-
- //    if (sub_child[2].classList.contains("current-subtitle") == false) {
- //    	sub_child[2].classList.add("current-subtitle");
- //    }
-
-	
+    /*timer = setInterval(updateCurrentTime, 100);
+    console.log(timer);
+    clearInterval(timer);
+    timer = null;
+    console.log(timer);*/
 }
+
+function vPause() {
+    vid.pause();
+}
+
+
+function initVideo(){
+    vid.play(); //start loading, didn't used `vid.load()` since it causes problems with the `ended` event
+
+    if(vid.readyState !== 4){ //HAVE_ENOUGH_DATA
+        vid.addEventListener('canplaythrough', onCanPlay, false);
+        vid.addEventListener('load', onCanPlay, false); //add load event as well to avoid errors, sometimes 'canplaythrough' won't dispatch.
+        vid.addEventListener("timeupdate", updateCurrentTime);
+        
+        setTimeout(function(){
+            vid.pause(); //block play so it buffers before playing
+        }, 1); //it needs to be after a delay otherwise it doesn't work properly.
+
+    }else{
+        //video is ready
+
+    }
+
+    
+
+    //timer = setInterval(updateCurrentTime, 100);
+    //vid.addEventListener("playing", onPlayVideo);
+    //vid.addEventListener("pause", onPauseVideo);
+    //vid.addEventListener("timeupdate", updateCurrentTime);
+
+    
+
+}
+
+function onCanPlay(){
+    vid.removeEventListener('canplaythrough', onCanPlay, false);
+    vid.removeEventListener('load', onCanPlay, false);
+    //video is ready
+    //vid.play();
+    //vid.pause();
+}
+
+/*function onPauseVideo(){
+    clearInterval(timer);
+    timer = null;
+    console.log("onPauseVideo");
+    console.log(timer);
+}*/
+
+/*function onPlayVideo(){
+    timer = setInterval(updateCurrentTime, 100);
+    console.log("onPlayVideo");
+    console.log(timer);
+}*/
 
 function scrollToElement(pageElement) {    
     var positionX = 0,         
@@ -93,8 +142,6 @@ function updateSubtitle() {
                     curElement.classList.add("current-subtitle");
                     sub.scrollTop = curElement.offsetTop - sub.offsetTop - 10;
                     //curElement.scrollIntoView({block: "start", behavior: "smooth"});
-                    //sub.scrollTop = curElement.offsetTop;
-                    //curElement.scrollTop = curElement.scrollHeight - curElement.clientHeight;
                 }
 	        		
 	        }
@@ -106,7 +153,10 @@ function updateSubtitle() {
     	else {
     		if (curVideoTime >= curElementTime) {
     			if (curElement.classList.contains("current-subtitle") == false)
-	        		curElement.classList.add("current-subtitle");
+                {
+                    curElement.classList.add("current-subtitle");
+                    sub.scrollTop = curElement.offsetTop - sub.offsetTop - 10;
+                }
 	        }
 	        else {
 	        	if (curElement.classList.contains("current-subtitle") == true)
