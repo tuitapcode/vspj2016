@@ -7,6 +7,7 @@
 var vid = null;
 var link_incr_time = null;
 var sub = null;
+var sub_container = null;
 var bPlay = null;
 var timer = null;
 
@@ -25,6 +26,7 @@ window.onload = function() {
 	link_incr_time.onclick = IncrCurrentTime;
 
 	sub = document.getElementById("subtitle");
+    sub_container = document.getElementById("sub_container");
 	removeTextChild();
 	//console.log(sub.childNodes.length);
 	sub.onclick = xuly;
@@ -136,11 +138,12 @@ function updateSubtitle() {
     		nextElement = sub_child[i+1];
     		nextElementTime = parseFloat(hmsToSecondsOnly(nextElement.getAttribute("title")));
 
-    		console.log("time: " + curVideoTime + "-" +curElementTime + "-" + nextElementTime);
+    		//console.log("time: " + curVideoTime + "-" +curElementTime + "-" + nextElementTime);
     		if ((curVideoTime >= curElementTime) && (curVideoTime < nextElementTime) ) {
     			if (curElement.classList.contains("current-subtitle") == false) {
                     curElement.classList.add("current-subtitle");
-                    sub.scrollTop = curElement.offsetTop - sub.offsetTop - 10;
+                    //subScrollTop(curElement);
+                    sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 10;
                     //curElement.scrollIntoView({block: "start", behavior: "smooth"});
                 }
 	        		
@@ -163,6 +166,45 @@ function updateSubtitle() {
 	        		curElement.classList.remove("current-subtitle");
 	        }
     	}
+    }
+}
+
+//sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 10;
+var scroll = null;
+var flag_working = true;
+function subScrollTop(curElement)
+{
+    //sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 10;
+    
+    //console.log(x);
+    //console.log(sub_container.scrollTop);
+    if (flag_working == true) {
+        var x = curElement.offsetTop - sub_container.offsetTop - 10;
+        while (sub_container.scrollTop < x)
+        {
+            scroll = setInterval(incr_sub_container(curElement), 1000);
+        }
+        
+        
+    }
+    
+    /*while (scroll < x) {
+        var id = setInterval(frame, 5);
+        clearInterval(id);
+    }*/
+}
+
+function incr_sub_container(curElement)
+{
+    var x = curElement.offsetTop - sub_container.offsetTop - 10;
+    if (sub_container.scrollTop < x) {
+        sub_container.scrollTop += 1;
+        console.log(sub_container.scrollTop);
+        flag_working = true;
+    }
+    else {
+        clearInterval(scroll);
+        flag_working = false;
     }
 }
 
