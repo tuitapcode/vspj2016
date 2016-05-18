@@ -1,7 +1,9 @@
 /**
 * [x] Click vào subtitle --> Set Current Time
 * [x] Highlight subtitle khi video playing...
-* [ ] Auto scroll khi video play...
+* [x] Auto scroll khi video play...
+* [x] Xử lý tối ưu với timeupdate...
+* [ ] Xử lý Smooth Scrolling...
 */
 
 var vid = null;
@@ -10,6 +12,13 @@ var sub = null;
 var sub_container = null;
 var bPlay = null;
 var timer = null;
+var curSubtitle = null;
+var nextSubtitle = null;
+
+var curSubtitleTime = null;
+var nextSubtitleTime = null;
+
+var lastSubtitleTime = null;
 
 
 window.onload = function() {
@@ -18,24 +27,16 @@ window.onload = function() {
     
 	//vid.ontimeupdate = updateCurrentTime;
 
-    //bPlay = document.getElementById("bJea");
-    //bPlay.onclick = vPause;//initVideo;
-    //setInterval(updateCurrentTime, 3000);
-
 	link_incr_time = document.getElementById("v_incr_time");
 	link_incr_time.onclick = IncrCurrentTime;
 
 	sub = document.getElementById("subtitle");
     sub_container = document.getElementById("sub_container");
-	removeTextChild();
-	//console.log(sub.childNodes.length);
-	sub.onclick = xuly;
+	
+    removeTextChild();
 
-    /*timer = setInterval(updateCurrentTime, 100);
-    console.log(timer);
-    clearInterval(timer);
-    timer = null;
-    console.log(timer);*/
+    lastSubtitleTime = parseFloat(hmsToSecondsOnly(sub.childNodes[sub.childNodes.length-1].getAttribute("title")));
+	sub.onclick = xuly;
 }
 
 function vPause() {
@@ -59,16 +60,6 @@ function initVideo(){
         //video is ready
 
     }
-
-    
-
-    //timer = setInterval(updateCurrentTime, 100);
-    //vid.addEventListener("playing", onPlayVideo);
-    //vid.addEventListener("pause", onPauseVideo);
-    //vid.addEventListener("timeupdate", updateCurrentTime);
-
-    
-
 }
 
 function onCanPlay(){
@@ -79,20 +70,7 @@ function onCanPlay(){
     //vid.pause();
 }
 
-/*function onPauseVideo(){
-    clearInterval(timer);
-    timer = null;
-    console.log("onPauseVideo");
-    console.log(timer);
-}*/
-
-/*function onPlayVideo(){
-    timer = setInterval(updateCurrentTime, 100);
-    console.log("onPlayVideo");
-    console.log(timer);
-}*/
-
-function scrollToElement(pageElement) {    
+/*function scrollToElement(pageElement) {    
     var positionX = 0,         
         positionY = 0;    
 
@@ -102,7 +80,7 @@ function scrollToElement(pageElement) {
         pageElement = pageElement.offsetParent;        
         window.scrollTo(positionX, positionY);    
     }
-}
+}*/
 
 function updateCurrentTime() {
     document.getElementById("curVideoTime").innerHTML = getCurrentTime();
@@ -114,11 +92,18 @@ function updateCurrentTime() {
 function updateSubtitle() {
 	var sub_len = sub.childNodes.length;
 	var sub_child = sub.childNodes;
+    var curVideoTime = parseFloat(getCurrentTime());
+
+    //Tối ưu, giảm số lần phải nhảy vô for, dựa trên thời gian.
+    if ( (curSubtitleTime !== null) && (nextSubtitleTime !== null) && (lastSubtitleTime !== null) )
+    {
+        if ( ( (curVideoTime < nextSubtitleTime) && (curVideoTime > curSubtitleTime) ) || (curVideoTime > lastSubtitleTime + 1) ) {
+            return;
+        }
+    }
 
 	for(i=0; i<sub_len; i++)
     {
-    	//console.log(sub_child[i]);
-
     	if (sub_child[i].nodeName != "A")
     	{
     		continue;
@@ -127,12 +112,10 @@ function updateSubtitle() {
     	var curElement = sub_child[i];
     	var curElementTime = parseFloat(hmsToSecondsOnly(curElement.getAttribute("title")));
 
-    	var curVideoTime = parseFloat(getCurrentTime());
-
     	var nextElement = null;
     	var nextElementTime = null;
 
-        //Remove tat ca tru nodeName "A"
+        //PHẢI remove tat ca các node TRỪ nodeName "A", nếu không func này sẽ lỗi.
     	if (i < (sub_len-1))
     	{
     		nextElement = sub_child[i+1];
@@ -142,9 +125,17 @@ function updateSubtitle() {
     		if ((curVideoTime >= curElementTime) && (curVideoTime < nextElementTime) ) {
     			if (curElement.classList.contains("current-subtitle") == false) {
                     curElement.classList.add("current-subtitle");
+                    
+                    //nextSubtitle = nextElement;
+                    curSubtitleTime = curElementTime;
+                    nextSubtitleTime = nextElementTime;
                     //subScrollTop(curElement);
+                    /*if (sub_container.scrollTop < (curElement.offsetTop - sub_container.offsetTop - 10)) {
+                        sub_container.scrollTop += 5;//curElement.offsetTop - sub_container.offsetTop - 10;
+                    }*/
                     sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 10;
                     //curElement.scrollIntoView({block: "start", behavior: "smooth"});
+                    break;
                 }
 	        		
 	        }
