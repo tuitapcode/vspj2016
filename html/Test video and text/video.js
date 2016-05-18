@@ -3,7 +3,7 @@
 * [x] Highlight subtitle khi video playing...
 * [x] Auto scroll khi video play...
 * [x] Xử lý tối ưu với timeupdate...
-* [ ] Xử lý Smooth Scrolling...
+* [ ] Xử lý Smooth Scrolling... xử lý khi scroll ở bottom bị lỗi, lặp vô hạn
 */
 
 var vid = null;
@@ -19,6 +19,10 @@ var curSubtitleTime = null;
 var nextSubtitleTime = null;
 
 var lastSubtitleTime = null;
+
+var scrollTimer = null;
+var scrollCounter = null;
+var curSubtitlePostion = null;
 
 
 window.onload = function() {
@@ -37,6 +41,8 @@ window.onload = function() {
 
     lastSubtitleTime = parseFloat(hmsToSecondsOnly(sub.childNodes[sub.childNodes.length-1].getAttribute("title")));
 	sub.onclick = xuly;
+
+    
 }
 
 function vPause() {
@@ -82,6 +88,31 @@ function onCanPlay(){
     }
 }*/
 
+function scrollToPosition(pos) {
+    //scrollCounter = 0;
+    scrollTimer = setInterval(function(){
+
+        console.log(pos);
+        //sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 10;
+        if ( (sub_container.scrollTop - pos) < 0)
+        {
+            sub_container.scrollTop += 5;
+        }
+        else {
+            sub_container.scrollTop -= 5;
+        }
+        
+
+
+        if (Math.abs(sub_container.scrollTop - pos) < 10)
+        {
+            clearInterval(scrollTimer);
+            scrollTimer = null;
+            console.log(scrollTimer);
+        }
+    }, 20);
+}
+
 function updateCurrentTime() {
     document.getElementById("curVideoTime").innerHTML = getCurrentTime();
     
@@ -94,13 +125,26 @@ function updateSubtitle() {
 	var sub_child = sub.childNodes;
     var curVideoTime = parseFloat(getCurrentTime());
 
+    
+
     //Tối ưu, giảm số lần phải nhảy vô for, dựa trên thời gian.
     if ( (curSubtitleTime !== null) && (nextSubtitleTime !== null) && (lastSubtitleTime !== null) )
     {
         if ( ( (curVideoTime < nextSubtitleTime) && (curVideoTime > curSubtitleTime) ) || (curVideoTime > lastSubtitleTime + 1) ) {
+            console.log("break");
             return;
         }
     }
+    console.log("contious");
+
+    /*if (scrollTimer === null && curSubtitlePostion!== null)
+    {
+        if (Math.abs(sub_container.scrollTop - curSubtitlePostion) > 10)
+        {
+            scrollToPosition(curSubtitlePostion);
+        }
+    }*/
+
 
 	for(i=0; i<sub_len; i++)
     {
@@ -125,8 +169,11 @@ function updateSubtitle() {
     		if ((curVideoTime >= curElementTime) && (curVideoTime < nextElementTime) ) {
     			if (curElement.classList.contains("current-subtitle") == false) {
                     curElement.classList.add("current-subtitle");
-                    
+
                     //nextSubtitle = nextElement;
+                    //curSubtitle = curElement;
+                    curSubtitlePostion = curElement.offsetTop - sub_container.offsetTop - 10;
+
                     curSubtitleTime = curElementTime;
                     nextSubtitleTime = nextElementTime;
                     //subScrollTop(curElement);
@@ -160,45 +207,6 @@ function updateSubtitle() {
     }
 }
 
-//sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 10;
-var scroll = null;
-var flag_working = true;
-function subScrollTop(curElement)
-{
-    //sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 10;
-    
-    //console.log(x);
-    //console.log(sub_container.scrollTop);
-    if (flag_working == true) {
-        var x = curElement.offsetTop - sub_container.offsetTop - 10;
-        while (sub_container.scrollTop < x)
-        {
-            scroll = setInterval(incr_sub_container(curElement), 1000);
-        }
-        
-        
-    }
-    
-    /*while (scroll < x) {
-        var id = setInterval(frame, 5);
-        clearInterval(id);
-    }*/
-}
-
-function incr_sub_container(curElement)
-{
-    var x = curElement.offsetTop - sub_container.offsetTop - 10;
-    if (sub_container.scrollTop < x) {
-        sub_container.scrollTop += 1;
-        console.log(sub_container.scrollTop);
-        flag_working = true;
-    }
-    else {
-        clearInterval(scroll);
-        flag_working = false;
-    }
-}
-
 function IncrCurrentTime(event) {
 	SetCurrentTime(getCurrentTime() + 1);
 	event.preventDefault();
@@ -206,7 +214,22 @@ function IncrCurrentTime(event) {
 
 function xuly(event){
 	var item = event.target;
+
+    //console.log(item);
+    //console.log(item.nextSibling);
+
+    curSubtitlePostion = item.offsetTop - sub_container.offsetTop - 10;
+    clearInterval(scrollTimer);
+    scrollTimer = null;
+
 	var time = hmsToSecondsOnly(item.getAttribute("title"));
+    
+    if (item.nextSibling != undefined)
+    {
+        curSubtitleTime = parseFloat(time);
+        nextSubtitleTime = parseFloat(hmsToSecondsOnly(item.nextSibling.getAttribute("title")));
+    }
+
 	SetCurrentTime(time);
 
 	resetHighLight();
