@@ -3,8 +3,8 @@
 * [x] Highlight subtitle khi video playing...
 * [x] Auto scroll khi video play...
 * [x] Xử lý tối ưu với timeupdate...
-* [ ] Xử lý Smooth Scrolling... xử lý khi scroll ở bottom bị lỗi, lặp vô hạn
-* [ ] Lỗi hiển thị khi click vào subtitle
+* [x] Xử lý Smooth Scrolling... xử lý khi scroll ở bottom bị lỗi, lặp vô hạn --> ko dùng nữa
+* [x] Lỗi hiển thị khi click vào subtitle --> do css hover, fix bay back-end
 */
 
 var vid = null;
@@ -12,6 +12,7 @@ var link_incr_time = null;
 var sub = null;
 var sub_container = null;
 var bPlay = null;
+
 var timer = null;
 var curSubtitle = null;
 var nextSubtitle = null;
@@ -25,8 +26,19 @@ var scrollTimer = null;
 var scrollCounter = null;
 var curSubtitlePostion = null;
 
+var topPadding = 30;
+var bAutoScroll = null;
+var flagAutoScroll = false;
+
+var logs = null;
+
 
 window.onload = function() {
+    logs = document.getElementById("j_log");
+    //logs.innerHTML = "?!";
+    //removeHoverCSSRule();
+    init_CSS();
+
 	vid = document.getElementById("j_video");
     initVideo();
     
@@ -35,15 +47,104 @@ window.onload = function() {
 	link_incr_time = document.getElementById("v_incr_time");
 	link_incr_time.onclick = IncrCurrentTime;
 
+    flagAutoScroll = false;
+    bAutoScroll = document.getElementById("j_auto_scroll");
+    bAutoScroll.onclick = toggleAutoScroll;
+
+    
+
 	sub = document.getElementById("subtitle");
     sub_container = document.getElementById("sub_container");
 	
     removeTextChild();
 
     lastSubtitleTime = parseFloat(hmsToSecondsOnly(sub.childNodes[sub.childNodes.length-1].getAttribute("title")));
-	sub.onclick = xuly;
+	sub.onclick = onClick_subtitle;
 
     
+}
+
+function init_CSS() {
+    addLogs(navigator.userAgent);
+    var elm, head;
+    head = document.getElementsByTagName('head')[0] || document.body || document.documentElement;
+
+    if (detectmob() == true) {
+        
+
+        elm = document.createElement('link');
+        elm.rel = "stylesheet";
+        elm.href = "style-mobile.css";
+        head.appendChild(elm);
+        addLogs("Mobile");
+        // elm = document.createElement('script');
+        // elm.src = "/s/jquery.dropkick-1.0.0.js";
+        // head.appendChild(elm);
+    }
+    else {
+        elm = document.createElement('link');
+        elm.rel = "stylesheet";
+        elm.href = "style.css";
+        head.appendChild(elm);
+        addLogs("Khác");
+    }
+}
+
+function detectmob() { 
+ if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPad/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ || navigator.userAgent.match(/Windows Phone/i)
+ ){
+    return true;
+  }
+ else {
+    return false;
+  }
+}
+
+function removeHoverCSSRule() {
+  if ('amara-transcript-line' in document) {
+    try {
+      var ignore = /:hover/;
+      for (var i = 0; i < document.styleSheets.length; i++) {
+        var sheet = document.styleSheets[i];
+        if (!sheet.cssRules) {
+          continue;
+        }
+        for (var j = sheet.cssRules.length - 1; j >= 0; j--) {
+          var rule = sheet.cssRules[j];
+          if (rule.type === CSSRule.STYLE_RULE && ignore.test(rule.selectorText)) {
+            sheet.deleteRule(j);
+          }
+        }
+      }
+    }
+    catch(e) {
+    }
+  }
+}
+
+function toggleAutoScroll() {
+    if (flagAutoScroll == false) {
+        bAutoScroll.innerHTML = "Auto Scroll: On";
+        flagAutoScroll = true;
+        AutoScroll(curSubtitle);
+    }
+    else {
+        bAutoScroll.innerHTML = "Auto Scroll: Off";
+        flagAutoScroll = false;
+    }
+    //console.log(flagAutoScroll);
+}
+
+function AutoScroll(curSub){
+    if (flagAutoScroll == true) {
+        sub_container.scrollTop = curSub.offsetTop - sub_container.offsetTop - topPadding;
+    }
 }
 
 function vPause() {
@@ -57,6 +158,8 @@ function initVideo(){
     if(vid.readyState !== 4){ //HAVE_ENOUGH_DATA
         vid.addEventListener('canplaythrough', onCanPlay, false);
         vid.addEventListener('load', onCanPlay, false); //add load event as well to avoid errors, sometimes 'canplaythrough' won't dispatch.
+        
+        //Event theo thời gian
         vid.addEventListener("timeupdate", updateCurrentTime);
         
         setTimeout(function(){
@@ -124,19 +227,20 @@ function updateCurrentTime() {
 function updateSubtitle() {
 	var sub_len = sub.childNodes.length;
 	var sub_child = sub.childNodes;
+
     var curVideoTime = parseFloat(getCurrentTime());
 
     
-
+    //Ràng buột
     //Tối ưu, giảm số lần phải nhảy vô for, dựa trên thời gian.
     if ( (curSubtitleTime !== null) && (nextSubtitleTime !== null) && (lastSubtitleTime !== null) )
     {
         if ( ( (curVideoTime < nextSubtitleTime) && (curVideoTime > curSubtitleTime) ) || (curVideoTime > lastSubtitleTime + 1) ) {
-            console.log("break");
+            //console.log("break");
             return;
         }
     }
-    console.log("contious");
+    //console.log("contious");
 
     /*if (scrollTimer === null && curSubtitlePostion!== null)
     {
@@ -147,7 +251,7 @@ function updateSubtitle() {
     }*/
 
 
-	for(i=0; i<sub_len; i++)
+	for(var i=0; i<sub_len; i++)
     {
     	if (sub_child[i].nodeName != "A")
     	{
@@ -181,10 +285,15 @@ function updateSubtitle() {
                     /*if (sub_container.scrollTop < (curElement.offsetTop - sub_container.offsetTop - 10)) {
                         sub_container.scrollTop += 5;//curElement.offsetTop - sub_container.offsetTop - 10;
                     }*/
-                    sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 30;
-                    curSubtitlePostion = sub_container.scrollTop;
+                    //sub_container.scrollTop = curElement.offsetTop - sub_container.offsetTop - 30;
+                    curSubtitle = curElement;
+                    curSubtitlePostion = curElement.offsetTop - sub_container.offsetTop - topPadding;
+                    AutoScroll(curSubtitle);
+                    // addLogs(count_cur_sub());
                     //curElement.scrollIntoView({block: "start", behavior: "smooth"});
-                    break;
+                    
+                    //[Tối ưu] Tìm ra rồi thì STOP
+                    //break;
                 }
 	        		
 	        }
@@ -193,12 +302,15 @@ function updateSubtitle() {
 	        		curElement.classList.remove("current-subtitle");
 	        }
     	}
-    	else {
+    	else { //Dùng cho last node
     		if (curVideoTime >= curElementTime) {
     			if (curElement.classList.contains("current-subtitle") == false)
                 {
                     curElement.classList.add("current-subtitle");
-                    sub.scrollTop = curElement.offsetTop - sub.offsetTop - 30;
+                    //sub.scrollTop = curElement.offsetTop - sub.offsetTop - 30;
+                    curSubtitle = curElement;
+                    curSubtitlePostion = curElement.offsetTop - sub_container.offsetTop - topPadding;
+                    // AutoScroll(curSubtitle);
                 }
 	        }
 	        else {
@@ -210,12 +322,18 @@ function updateSubtitle() {
 }
 
 function IncrCurrentTime(event) {
-	SetCurrentTime(getCurrentTime() + 1);
+	SetCurrentTime(getCurrentTime() + 20);
 	event.preventDefault();
 }
 
-function xuly(event){
+function addLogs(text) {
+    logs.innerHTML += text + "<br>";
+}
+
+function onClick_subtitle(event){
     resetHighLight();
+
+    
 
 	var item = event.target;
 
@@ -236,8 +354,10 @@ function xuly(event){
 
 	SetCurrentTime(time);
 
-	if (item.classList.contains("current-subtitle") == false)
-		item.classList.add("current-subtitle");
+	// if (item.classList.contains("current-subtitle") == false)
+	// 	item.classList.add("current-subtitle");
+    // addLogs(count_cur_sub());
+
 	event.preventDefault();
 }
 
@@ -260,6 +380,31 @@ function resetHighLight(){
     }
 }
 
+function count_cur_sub(){
+    var sub_len = sub.childNodes.length;
+    var sub_child = sub.childNodes;
+
+    var nCount = 0;
+
+    for(i=0; i<sub_len; i++)
+    {
+        if (sub_child[i].nodeName != "A")
+        {
+            continue;
+        }
+
+        var curElement = sub_child[i];
+        
+
+        if (curElement.classList.contains("current-subtitle") == true)
+        {
+            nCount += 1;
+        }
+            
+    }
+    return nCount;
+}
+
 function removeTextChild(){
 
 	for(i=0; i<sub.childNodes.length; i++)
@@ -271,7 +416,6 @@ function removeTextChild(){
     	}
     }
 }
-
 
 function getCurrentTime() {
 	return vid.currentTime;

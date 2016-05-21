@@ -13,12 +13,12 @@
 }
 
 /*Mobile ko xài Hover*/
-a.amara-transcript-line:hover{
+/*a.amara-transcript-line:hover{
 	background:#CACBCC !important;
 	-moz-box-shadow: -4px 0px 0 #d1d2d3 !important;
 	-webkit-box-shadow:-4px 0px 0 #d1d2d3 !important;
 	box-shadow:-4px 0px 0 #d1d2d3 !important;
-}
+}*/
 
 a.amara-transcript-line.current-subtitle{
 	background:#DADADA !important;
