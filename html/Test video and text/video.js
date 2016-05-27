@@ -11,19 +11,19 @@ var vid = null;
 var link_incr_time = null;
 var sub = null;
 var sub_container = null;
-var bPlay = null;
+//var bPlay = null;
 
-var timer = null;
+// var timer = null;
 var curSubtitle = null;
-var nextSubtitle = null;
+// var nextSubtitle = null;
 
 var curSubtitleTime = null;
 var nextSubtitleTime = null;
 
 var lastSubtitleTime = null;
 
-var scrollTimer = null;
-var scrollCounter = null;
+// var scrollTimer = null;
+// var scrollCounter = null;
 var curSubtitlePostion = null;
 
 var topPadding = 30;
@@ -61,8 +61,12 @@ window.onload = function() {
     lastSubtitleTime = parseFloat(hmsToSecondsOnly(sub.childNodes[sub.childNodes.length-1].getAttribute("title")));
 	sub.onclick = onClick_subtitle;
 
-    
+
 }
+
+window.$on = function (target, type, callback, useCapture) {
+    target.addEventListener(type, callback, !!useCapture);
+};
 
 function init_CSS() {
     addLogs(navigator.userAgent);
@@ -106,7 +110,7 @@ function detectmob() {
   }
 }
 
-function removeHoverCSSRule() {
+/*function removeHoverCSSRule() {
   if ('amara-transcript-line' in document) {
     try {
       var ignore = /:hover/;
@@ -126,7 +130,7 @@ function removeHoverCSSRule() {
     catch(e) {
     }
   }
-}
+}*/
 
 function toggleAutoScroll() {
     if (flagAutoScroll == false) {
@@ -147,9 +151,9 @@ function AutoScroll(curSub){
     }
 }
 
-function vPause() {
+/*function vPause() {
     vid.pause();
-}
+}*/
 
 
 function initVideo(){
@@ -160,7 +164,8 @@ function initVideo(){
         vid.addEventListener('load', onCanPlay, false); //add load event as well to avoid errors, sometimes 'canplaythrough' won't dispatch.
         
         //Event theo thời gian
-        vid.addEventListener("timeupdate", updateCurrentTime);
+        //vid.addEventListener("timeupdate", updateCurrentTime);
+        $on(vid, "timeupdate", updateCurrentTime);
         
         setTimeout(function(){
             vid.pause(); //block play so it buffers before playing
@@ -380,7 +385,7 @@ function resetHighLight(){
     }
 }
 
-function count_cur_sub(){
+/*function count_cur_sub(){
     var sub_len = sub.childNodes.length;
     var sub_child = sub.childNodes;
 
@@ -403,7 +408,7 @@ function count_cur_sub(){
             
     }
     return nCount;
-}
+}*/
 
 function removeTextChild(){
 
