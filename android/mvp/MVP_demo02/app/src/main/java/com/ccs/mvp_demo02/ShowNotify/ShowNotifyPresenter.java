@@ -22,7 +22,7 @@ public class ShowNotifyPresenter implements ShowNotifyConstract.Presenter {
     @Override
     public void doNotify() {
         String curTime = DateFormat.getTimeInstance().format(new Date());
-        mView.setText("Chào chú mày lúc " + curTime);
+        mView.setText("Time: " + curTime);
     }
 
     @Override
