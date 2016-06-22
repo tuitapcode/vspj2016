@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MVP-practices</string>
+    <string name="recycler_view">Recycler View 01</string>
 </resources>
