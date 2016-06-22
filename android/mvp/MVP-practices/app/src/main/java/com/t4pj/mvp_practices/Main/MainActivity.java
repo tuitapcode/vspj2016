@@ -11,8 +11,6 @@ import com.t4pj.mvp_practices.R;
 // TODO: Load fragment -> hiện 1 list các Button -> mở các activity cho từng phần BT
 public class MainActivity extends AppCompatActivity {
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

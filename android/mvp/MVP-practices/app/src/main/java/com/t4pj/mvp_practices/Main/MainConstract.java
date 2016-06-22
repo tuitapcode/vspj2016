@@ -1,6 +1,7 @@
 package com.t4pj.mvp_practices.Main;
 
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 
 import com.t4pj.mvp_practices.BasePresenter;
 import com.t4pj.mvp_practices.BaseView;
@@ -11,6 +12,7 @@ import com.t4pj.mvp_practices.BaseView;
 public interface MainConstract {
     interface View extends BaseView<Presenter> {
         Context getCurContext();
+        FragmentActivity getCurActivity();
     }
 
     interface Presenter extends BasePresenter {
