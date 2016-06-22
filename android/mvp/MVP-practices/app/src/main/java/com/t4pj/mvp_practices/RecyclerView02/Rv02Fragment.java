@@ -45,6 +45,17 @@ public class Rv02Fragment extends Fragment implements Rv02Constract.View {
         return getContext();
     }
 
+    private ArrayList<Object> getSampleArrayList() {
+        ArrayList<Object> items = new ArrayList<>();
+        items.add(new User("Dany Targaryen", "Valyria"));
+        items.add(new User("Rob Stark", "Winterfell"));
+        items.add("image");
+        items.add(new User("Jon Snow", "Castle Black"));
+        items.add("image");
+        items.add(new User("Tyrion Lanister", "King's Landing"));
+        return items;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,10 +66,11 @@ public class Rv02Fragment extends Fragment implements Rv02Constract.View {
 
         recyclerView = (RecyclerView)root.findViewById(R.id.rv02);
 
-        cards = Rv02Card.createContactsList(10);
-        Rv02CardAdapter cardAdapter = new Rv02CardAdapter(getContext(), cards);
-
-        recyclerView.setAdapter(cardAdapter);
+//        cards = Rv02Card.createContactsList(10);
+//        Rv02CardAdapter cardAdapter = new Rv02CardAdapter(getContext(), cards);
+//
+//        recyclerView.setAdapter(cardAdapter);
+        recyclerView.setAdapter(new Rv02ComplexRecyclerViewAdapter(getSampleArrayList()));
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
 
         return root;

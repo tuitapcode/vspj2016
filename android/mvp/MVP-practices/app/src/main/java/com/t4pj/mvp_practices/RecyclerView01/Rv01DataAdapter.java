@@ -73,7 +73,7 @@ public class Rv01DataAdapter extends RecyclerView.Adapter<Rv01DataAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
-
+            
             txtText = (TextView) itemView.findViewById(R.id.txtText);
             btnLike = (Button) itemView.findViewById(R.id.btnLike);
 
