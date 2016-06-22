@@ -27,6 +27,7 @@ public class Rv01DataAdapter extends RecyclerView.Adapter<Rv01DataAdapter.ViewHo
     }
 
     private Context getContext() {
+        //
         return mContext;
     }
 

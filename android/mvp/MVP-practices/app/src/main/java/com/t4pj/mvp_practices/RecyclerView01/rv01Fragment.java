@@ -18,7 +18,10 @@ import java.util.ArrayList;
  */
 public class Rv01Fragment extends Fragment implements Rv01Constract.View {
 
+    Rv01Constract.Presenter mPresenter;
+
     ArrayList<Rv01Data> datas;
+    RecyclerView recyclerView;
 
     public static Rv01Fragment newInstance() {
         Rv01Fragment fragment = new Rv01Fragment();
@@ -28,7 +31,7 @@ public class Rv01Fragment extends Fragment implements Rv01Constract.View {
 
     @Override
     public void setPresenter(Rv01Constract.Presenter Presenter) {
-
+        mPresenter = Presenter;
     }
 
     @Nullable
@@ -37,12 +40,18 @@ public class Rv01Fragment extends Fragment implements Rv01Constract.View {
 
         View root = inflater.inflate(R.layout.rv01_frag, container, false);
 
-        RecyclerView recyclerView = (RecyclerView)root.findViewById(R.id.rv01);
+        recyclerView = (RecyclerView)root.findViewById(R.id.rv01);
+        recyclerView.setHasFixedSize(true);
 
-        datas = Rv01Data.createContactsList(20);
+        datas = Rv01Data.createContactsList(5);
+//        datas.addAll(Rv01Data.createContactsList(5));
         Rv01DataAdapter adapter = new Rv01DataAdapter(getContext(), datas);
+
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+
+        datas.addAll(Rv01Data.createContactsList(5));
+        adapter.notifyItemRangeInserted(adapter.getItemCount(), datas.size());
 
         return root;
     }
