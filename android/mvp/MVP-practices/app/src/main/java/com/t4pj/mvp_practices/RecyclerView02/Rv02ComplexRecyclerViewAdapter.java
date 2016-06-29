@@ -100,6 +100,4 @@ public class Rv02ComplexRecyclerViewAdapter extends RecyclerView.Adapter<Recycle
         }
     }
 
-
-
 }

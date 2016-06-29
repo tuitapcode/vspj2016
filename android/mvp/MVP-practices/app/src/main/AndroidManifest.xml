@@ -17,6 +17,7 @@
         </activity>
         <activity android:name="com.t4pj.mvp_practices.RecyclerView01.Rv01Activity"></activity>
         <activity android:name="com.t4pj.mvp_practices.RecyclerView02.Rv02Activity"></activity>
+        <activity android:name="com.t4pj.mvp_practices.RecyclerView03.CardActivity"></activity>
     </application>
 
 </manifest>
