@@ -1,6 +1,7 @@
 package com.t4pj.mvp_practices.CNNStudentNews;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.t4pj.mvp_practices.R;
 
@@ -30,7 +33,12 @@ public class CSNAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static int FADE_DURATION = 1000; // in milliseconds
     private int lastPos = -1;
 
+    //Trả về data để save instance state
     public List<Object> getData(){
+        if (copyItems.size() >= items.size()) {
+            return copyItems;
+        }
+
         return items;
     }
 
@@ -101,10 +109,28 @@ public class CSNAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         switch (viewType) {
             case CSN_CARD:
                 View csnCard = inflater.inflate(R.layout.csn_card, parent, false);
-                viewHolder = new CSNCardHolder(csnCard);
+                viewHolder = new CSNCardHolder(csnCard, new CSNCardHolder.IVHClick() {
+                    @Override
+                    public void ivClick(RecyclerView.ViewHolder vh, ImageView iv) {
+                        Log.d("Jea", "IV: " + vh.getAdapterPosition());
+                    }
+
+                    @Override
+                    public void txtDateClick(RecyclerView.ViewHolder vh, View view) {
+                        TextView tv = (TextView) view;
+                        Log.d("Jea", "Date: " + vh.getAdapterPosition());
+                    }
+
+                    @Override
+                    public void txtLikeClick(RecyclerView.ViewHolder vh, View view) {
+                        TextView tv = (TextView) view;
+                        Log.d("Jea", "Like: " + vh.getAdapterPosition());
+                    }
+                });
+//                Log.d("Jea", ""+viewHolder.getAdapterPosition());
                 break;
             default:
-                // chưa xử lý
+                // tạm dùng 1 loại card --> chưa xử lý mặc định
                 break;
         }
 
@@ -128,6 +154,7 @@ public class CSNAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 //
                 break;
         }
+
 
 //        if (position > lastPos) {
 //            inFromRightAnimation(holder.itemView);

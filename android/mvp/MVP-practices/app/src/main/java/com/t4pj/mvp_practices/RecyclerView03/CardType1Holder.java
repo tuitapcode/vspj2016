@@ -1,6 +1,7 @@
 package com.t4pj.mvp_practices.RecyclerView03;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -16,6 +17,7 @@ public class CardType1Holder extends RecyclerView.ViewHolder {
     public CardType1Holder(View itemView) {
         super(itemView);
         imageView = (ImageView) itemView.findViewById(R.id.ivPhoto);
+
     }
 
     public ImageView getImageView() {
