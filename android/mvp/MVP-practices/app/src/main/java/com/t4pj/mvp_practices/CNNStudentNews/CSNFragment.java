@@ -1,10 +1,12 @@
 package com.t4pj.mvp_practices.CNNStudentNews;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import com.t4pj.mvp_practices.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import jp.wasabeef.recyclerview.animators.FadeInDownAnimator;
@@ -39,7 +42,7 @@ public class CSNFragment extends Fragment implements CSNConstract.View {
     FloatingActionButton floatingActionButton;
     CSNAdapter csnAdapter;
 
-    int count = 0;
+    private int count = 0;
 
 
     public static CSNFragment newInstance() {
@@ -85,8 +88,17 @@ public class CSNFragment extends Fragment implements CSNConstract.View {
             }
         });
 
+        if (savedInstanceState != null){
+            ArrayList<Object> saveItems = (ArrayList<Object>) savedInstanceState.getSerializable("csn");
+            csnAdapter = new CSNAdapter(saveItems);
+            count = savedInstanceState.getInt("csn_count");
 
-        csnAdapter = new CSNAdapter(getSampleArrayList());
+        } else {
+            csnAdapter = new CSNAdapter(getSampleArrayList());
+        }
+
+//        csnAdapter = new CSNAdapter(getSampleArrayList());
+
 
 //        recyclerView.setItemAnimator(new SlideInUpAnimator());
         recyclerView.setAdapter(csnAdapter);
@@ -99,6 +111,14 @@ public class CSNFragment extends Fragment implements CSNConstract.View {
 
 
         return root;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+//        outState.putParcelable("csn", (Parcelable) csnAdapter.getData());
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("csn", (Serializable) csnAdapter.getData());
+        outState.putInt("csn_count", count);
     }
 
     @Override
@@ -145,4 +165,6 @@ public class CSNFragment extends Fragment implements CSNConstract.View {
 
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+
 }

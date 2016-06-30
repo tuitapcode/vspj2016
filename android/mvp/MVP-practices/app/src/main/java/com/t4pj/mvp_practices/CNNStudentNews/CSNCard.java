@@ -3,6 +3,8 @@ package com.t4pj.mvp_practices.CNNStudentNews;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.t4pj.mvp_practices.R;
 
@@ -38,4 +40,6 @@ public class CSNCard {
     public void setDescription(String description) {
         Description = description;
     }
+
+
 }

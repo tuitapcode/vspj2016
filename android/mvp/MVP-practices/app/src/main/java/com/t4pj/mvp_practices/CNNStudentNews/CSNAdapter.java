@@ -30,6 +30,10 @@ public class CSNAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static int FADE_DURATION = 1000; // in milliseconds
     private int lastPos = -1;
 
+    public List<Object> getData(){
+        return items;
+    }
+
     //Copy data khi click search
     public void setCopyItems(){
         copyItems.clear();
