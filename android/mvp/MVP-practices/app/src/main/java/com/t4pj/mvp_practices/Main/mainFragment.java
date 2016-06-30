@@ -19,7 +19,7 @@ public class MainFragment extends Fragment implements MainConstract.View {
 
     MainConstract.Presenter mPresenter;
 
-    Button btnRecyclerView01, btnRecyclerView02, btnRecyclerView03;
+    Button btnRecyclerView01, btnRecyclerView02, btnRecyclerView03, btnTmp;
 
     @Override
     public void setPresenter(MainConstract.Presenter Presenter) {
@@ -63,6 +63,14 @@ public class MainFragment extends Fragment implements MainConstract.View {
             @Override
             public void onClick(View view) {
                 mPresenter.onClick_btnRecyclerView03();
+            }
+        });
+
+        btnTmp = (Button) root.findViewById(R.id.btnTmp);
+        btnTmp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.onClick_btnTmp();
             }
         });
 

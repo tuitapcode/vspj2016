@@ -3,4 +3,5 @@
     <string name="recycler_view">Recycler View 01</string>
     <string name="recycler_view_02">Recycler View 02</string>
     <string name="recycler_view_03">Recycler View 03</string>
+    <string name="tmp_button">TMP</string>
 </resources>

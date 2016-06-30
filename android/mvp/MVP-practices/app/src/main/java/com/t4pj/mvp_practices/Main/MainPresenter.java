@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.t4pj.mvp_practices.RecyclerView01.Rv01Activity;
 import com.t4pj.mvp_practices.RecyclerView02.Rv02Activity;
 import com.t4pj.mvp_practices.RecyclerView03.CardActivity;
+import com.t4pj.mvp_practices.tmp.TmpActivity;
 
 import android.content.Intent;
 
@@ -47,6 +48,12 @@ public class MainPresenter implements MainConstract.Presenter {
     @Override
     public void onClick_btnRecyclerView03() {
         Intent intent = new Intent(mView.getCurContext(), CardActivity.class);
+        startActivity(mView.getCurActivity(), intent, Bundle.EMPTY);
+    }
+
+    @Override
+    public void onClick_btnTmp() {
+        Intent intent = new Intent(mView.getCurContext(), TmpActivity.class);
         startActivity(mView.getCurActivity(), intent, Bundle.EMPTY);
     }
 }

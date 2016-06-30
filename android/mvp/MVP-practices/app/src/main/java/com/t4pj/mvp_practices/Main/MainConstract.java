@@ -19,5 +19,6 @@ public interface MainConstract {
         void onClick_btnRecyclerView01();
         void onClick_btnRecyclerView02();
         void onClick_btnRecyclerView03();
+        void onClick_btnTmp();
     }
 }
